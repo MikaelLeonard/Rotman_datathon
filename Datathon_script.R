@@ -106,6 +106,30 @@ for (col in colnames(data)) {
   }
 }
 
+###Subsetting for different Countries/Regions###
+
+#G7
+g7 <- data %>%
+  filter(data$country_name == c("Canada","France", "Germany", "Italy", "Japan", "United Kingdom", "United States"))
+
+#OECD
+oecd <- data %>%
+  filter(data$country_name == c("Australia", "Austria", "Belgium", "Canada", "Chile", "Colombia", "Costa Rica", "Czech Republic",
+                                "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Iceland", "Ireland",
+                                "Israel", "Italy", "Japan", "Korea", "Latvia", "Lithuania", "Luxembourg", "Mexico", "Netherlands",
+                                "New Zealand", "Norway", "Poland", "Portugal", "Slovak Republic", "Slovenia", "Spain", "Sweden", 
+                                "Switzerland", "Turkey", "United Kingdom", "United States"))
+
+oecd.name <- c("Australia", "Austria", "Belgium", "Canada", "Chile", "Colombia", "Costa Rica", "Czech Republic",
+               "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Iceland", "Ireland",
+               "Israel", "Italy", "Japan", "Korea", "Latvia", "Lithuania", "Luxembourg", "Mexico", "Netherlands",
+               "New Zealand", "Norway", "Poland", "Portugal", "Slovak Republic", "Slovenia", "Spain", "Sweden", 
+               "Switzerland", "Turkey", "United Kingdom", "United States")
+
+
+
+
+
 ###### I'm Confused #####
 # converting from list to dataframe 
 data_mtrx <- as.data.frame(data)
