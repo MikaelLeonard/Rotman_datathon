@@ -106,6 +106,7 @@ for (col in colnames(data)) {
   }
 }
 
+################################################
 ###Subsetting for different Countries/Regions###
 
 #G7
@@ -170,7 +171,7 @@ global.north <- data %>%
   "Portugal", "San Marino", "Slovenia", "Spain", "Sweden", "Switzerland", "United Kingdom", "United States"
 ))
 
-
+#########################
 ###### I'm Confused #####
 # converting from list to dataframe 
 data_mtrx <- as.data.frame(data)
