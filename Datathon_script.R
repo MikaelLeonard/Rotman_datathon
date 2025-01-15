@@ -11,6 +11,7 @@ library(kableExtra)
 library(readxl)
 library(lubridate)
 library(mice)
+library(corrplot)
 
 #### DATA READING ####
 
@@ -155,6 +156,8 @@ selected_data <- selected_data %>%
          country_code, 
          year, 
          time_code, 
+         inflation,
+         inflation_deflator,
          net_nat_income_percapita_NY.ADJ.NNTY.PC.CD, 
          net_nat_income_NY.ADJ.NNTY.CD, 
          household_expenditure_GDP, 
@@ -265,72 +268,6 @@ imputed_data <- mice(
 
 completed_data <- complete(imputed_data, 1)  # Replace '1' with the index of the dataset you want
 
-#### Subsetting for different Countries/Regions ####
-
-#G7
-g7_countries <- c("Canada","France", "Germany", "Italy", "Japan", "United Kingdom", "United States")
-g7 <- subset(completed_data, country_name %in% g7_countries)
-
-
-#OECD
-oecd_countries <- c("Australia", "Austria", "Belgium", "Canada", "Chile", "Colombia", "Costa Rica", "Czech Republic",
-                    "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Iceland", "Ireland",
-                    "Israel", "Italy", "Japan", "Korea", "Latvia", "Lithuania", "Luxembourg", "Mexico", "Netherlands",
-                    "New Zealand", "Norway", "Poland", "Portugal", "Slovak Republic", "Slovenia", "Spain", "Sweden", 
-                    "Switzerland", "Turkey", "United Kingdom", "United States")
-oecd <- subset(completed_data, country_name %in% oecd_countries)
-
-
-# Global South Countries
-south_countries <- c(
-  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda",
-  "Argentina", "Armenia", "Aruba", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados",
-  "Belarus", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana",
-  "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon",
-  "Cape Verde", "Central African Republic", "Chad", "Channel Islands", "Chile", "China",
-  "Colombia", "Comoros", "Congo", "Costa Rica", "Côte d'Ivoire", "Croatia", "Cuba", "Cyprus",
-  "Czech Republic", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador",
-  "Equatorial Guinea", "Eritrea", "Ethiopia", "Fiji", "French Guiana", "French Polynesia", "Gabon",
-  "Gambia", "Georgia", "Ghana", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guinea", "Guinea-Bissau",
-  "Guyana", "Haiti", "Honduras", "Hong Kong", "India", "Indonesia", "Iran", "Iraq", "Jamaica", "Jordan",
-  "Kazakhstan", "Kenya", "Kiribati", "Korea, Democratic People's Republic of", "Kuwait", "Kyrgyzstan",
-  "Lao People's Democratic Republic", "Lebanon", "Lesotho", "Liberia", "Libya", "Madagascar", "Malawi",
-  "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritania", "Mauritius",
-  "Mayotte", "Mexico", "Micronesia, Federated States of", "Mongolia", "Montenegro", "Morocco", "Mozambique",
-  "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands Antilles", "New Caledonia", "Nicaragua", "Niger",
-  "Nigeria", "Oman", "Pakistan", "Palau", "Palestinian Territory, Occupied", "Panama", "Papua New Guinea",
-  "Paraguay", "Peru", "Philippines", "Puerto Rico", "Qatar", "Republic of Moldova", "Réunion", "Romania",
-  "Russian Federation", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines",
-  "Samoa", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone",
-  "Singapore", "Slovakia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Sri Lanka", "Sudan",
-  "Suriname", "Swaziland", "Syrian Arab Republic", "Taiwan", "Tajikistan", "Tanzania", "Thailand",
-  "The former Yugoslav Republic of Macedonia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago",
-  "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "Uruguay",
-  "Uzbekistan", "Vanuatu", "Venezuela", "Viet Nam", "Virgin Islands", "Western Sahara", "Yemen", "Zambia",
-  "Zimbabwe"
-)
-
-global.south <- subset(completed_data, country_name %in% south_countries)
-
-# Global North Countries
-north_countries <- c(
-  "Australia", "Austria", "Belgium", "Canada", "Denmark", "Estonia", "Finland", "France", "Germany",
-  "Greece", "Hungary", "Iceland", "Ireland", "Israel", "Italy", "Japan", "Korea, Republic of", "Latvia",
-  "Lithuania", "Liechtenstein", "Luxembourg", "Monaco", "Netherlands", "New Zealand", "Norway", "Poland",
-  "Portugal", "San Marino", "Slovenia", "Spain", "Sweden", "Switzerland", "United Kingdom", "United States"
-)
-
-global.north <- subset(completed_data, country_name %in% north_countries)
-
-
-#Top 20 highest gdp
-gdp_countries <- c("United States", "China", "Germany", "Japan", "India", 
-                   "United Kingdom", "France", "Italy", "Brazil", "Canada", 
-                   "Russian Federation", "Mexico", "Australia", "Korea, Rep.", 
-                   "Spain", "Indonesia", "Netherlands", "Turkiye", 
-                   "Saudi Arabia", "Switzerland") 
-countries <- subset(completed_data, country_name %in% gdp_countries)
-
 #### PCA ANALYSIS ####
 
 supply_chain_volatility <- completed_data %>%
@@ -436,6 +373,70 @@ completed_data$cost_variable <- (cost_variable)^2
 test <- completed_data %>%
   select(country_name, volatility_variable, cost_variable)
 
-  
+#### Subsetting for different Countries/Regions ####
+
+#G7
+g7_countries <- c("Canada","France", "Germany", "Italy", "Japan", "United Kingdom", "United States")
+g7 <- subset(completed_data, country_name %in% g7_countries)
+
+
+#OECD
+oecd_countries <- c("Australia", "Austria", "Belgium", "Canada", "Chile", "Colombia", "Costa Rica", "Czech Republic",
+                    "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Iceland", "Ireland",
+                    "Israel", "Italy", "Japan", "Korea", "Latvia", "Lithuania", "Luxembourg", "Mexico", "Netherlands",
+                    "New Zealand", "Norway", "Poland", "Portugal", "Slovak Republic", "Slovenia", "Spain", "Sweden", 
+                    "Switzerland", "Turkey", "United Kingdom", "United States")
+oecd <- subset(completed_data, country_name %in% oecd_countries)
+
+
+# Global South Countries
+south_countries <- c(
+  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda",
+  "Argentina", "Armenia", "Aruba", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados",
+  "Belarus", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana",
+  "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon",
+  "Cape Verde", "Central African Republic", "Chad", "Channel Islands", "Chile", "China",
+  "Colombia", "Comoros", "Congo", "Costa Rica", "Côte d'Ivoire", "Croatia", "Cuba", "Cyprus",
+  "Czech Republic", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador",
+  "Equatorial Guinea", "Eritrea", "Ethiopia", "Fiji", "French Guiana", "French Polynesia", "Gabon",
+  "Gambia", "Georgia", "Ghana", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guinea", "Guinea-Bissau",
+  "Guyana", "Haiti", "Honduras", "Hong Kong", "India", "Indonesia", "Iran", "Iraq", "Jamaica", "Jordan",
+  "Kazakhstan", "Kenya", "Kiribati", "Korea, Democratic People's Republic of", "Kuwait", "Kyrgyzstan",
+  "Lao People's Democratic Republic", "Lebanon", "Lesotho", "Liberia", "Libya", "Madagascar", "Malawi",
+  "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritania", "Mauritius",
+  "Mayotte", "Mexico", "Micronesia, Federated States of", "Mongolia", "Montenegro", "Morocco", "Mozambique",
+  "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands Antilles", "New Caledonia", "Nicaragua", "Niger",
+  "Nigeria", "Oman", "Pakistan", "Palau", "Palestinian Territory, Occupied", "Panama", "Papua New Guinea",
+  "Paraguay", "Peru", "Philippines", "Puerto Rico", "Qatar", "Republic of Moldova", "Réunion", "Romania",
+  "Russian Federation", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines",
+  "Samoa", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone",
+  "Singapore", "Slovakia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Sri Lanka", "Sudan",
+  "Suriname", "Swaziland", "Syrian Arab Republic", "Taiwan", "Tajikistan", "Tanzania", "Thailand",
+  "The former Yugoslav Republic of Macedonia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago",
+  "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "Uruguay",
+  "Uzbekistan", "Vanuatu", "Venezuela", "Viet Nam", "Virgin Islands", "Western Sahara", "Yemen", "Zambia",
+  "Zimbabwe"
+)
+
+global.south <- subset(completed_data, country_name %in% south_countries)
+
+# Global North Countries
+north_countries <- c(
+  "Australia", "Austria", "Belgium", "Canada", "Denmark", "Estonia", "Finland", "France", "Germany",
+  "Greece", "Hungary", "Iceland", "Ireland", "Israel", "Italy", "Japan", "Korea, Republic of", "Latvia",
+  "Lithuania", "Liechtenstein", "Luxembourg", "Monaco", "Netherlands", "New Zealand", "Norway", "Poland",
+  "Portugal", "San Marino", "Slovenia", "Spain", "Sweden", "Switzerland", "United Kingdom", "United States"
+)
+
+global.north <- subset(completed_data, country_name %in% north_countries)
+
+
+#Top 20 highest gdp
+gdp_countries <- c("United States", "China", "Germany", "Japan", "India", 
+                   "United Kingdom", "France", "Italy", "Brazil", "Canada", 
+                   "Russian Federation", "Mexico", "Australia", "Korea, Rep.", 
+                   "Spain", "Indonesia", "Netherlands", "Turkiye", 
+                   "Saudi Arabia", "Switzerland") 
+countries <- subset(completed_data, country_name %in% gdp_countries)
 
 
