@@ -333,6 +333,8 @@ countries <- subset(completed_data, country_name %in% gdp_countries)
 
 #### PCA ANALYSIS ####
 
+#### PCA volatility
+
 supply_chain_volatility <- completed_data %>%
   select(
   # LPI 
@@ -375,23 +377,23 @@ supply_chain_volatility <- completed_data %>%
 apply(supply_chain_volatility, 2, mean)
 apply(supply_chain_volatility, 2, var)
 
-pr_out <- prcomp(supply_chain_volatility, scale=TRUE)
+pr_out_volatility <- prcomp(supply_chain_volatility, scale=TRUE)
 
-loadings_volatility <- pr_out$rotation
+loadings_volatility <- pr_out_volatility$rotation
 
-pca_scores <- pr_out$x
+pca_scores <- pr_out_volatility$x
 
 volatility_variable <- pca_scores[, 1]
 
-volatility_variable_weighted <- as.matrix(supply_chain_volatility) %*% loadings[, 1]
+volatility_variable_weighted <- as.matrix(supply_chain_volatility) %*% loadings_volatility[, 1]
 
 explained_variance_volatility <- (pr_out_volatility$sdev)^2
-explained_variance_ratio_volatility <- explained_variance / sum(explained_variance)
+explained_variance_ratio_volatility <- explained_variance_volatility / sum(explained_variance_volatility)
 explained_variance_ratio_volatility[1]
 
 completed_data$volatility_variable <- (volatility_variable)^2
 
-#### PCA volatility 
+#### PCA cost
 
 supply_chain_cost <- completed_data %>%
   select(
@@ -425,10 +427,10 @@ pca_scores <- pr_out_cost$x
 
 cost_variable <- pca_scores[, 1]
 
-cost_variable_weighted <- as.matrix(supply_chain_volatility) %*% loadings[, 1]
+cost_variable_weighted <- as.matrix(supply_chain_cost) %*% loadings_cost[, 1]
 
 explained_variance_cost <- (pr_out_cost$sdev)^2
-explained_variance_ratio_cost <- explained_variance / sum(explained_variance)
+explained_variance_ratio_cost <- explained_variance_cost / sum(explained_variance_cost)
 explained_variance_ratio_cost[1]
 
 completed_data$cost_variable <- (cost_variable)^2
