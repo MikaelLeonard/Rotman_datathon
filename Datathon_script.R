@@ -171,6 +171,24 @@ global.north <- data %>%
   "Portugal", "San Marino", "Slovenia", "Spain", "Sweden", "Switzerland", "United Kingdom", "United States"
 ))
 
+
+#################
+## Correlation ##
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #########################
 ###### I'm Confused #####
 # converting from list to dataframe 
