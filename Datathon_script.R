@@ -67,6 +67,9 @@ selected_data <- data %>%
     year = "Time",
     time_code = "Time Code",
     
+    #consumer price 
+    consumer_price = "Consumer price index (2010 = 100) [FP.CPI.TOTL]",
+    
     # Cost of living indicators
     # Inflationary pressure 
     inflation = "Inflation, consumer prices (annual %) [FP.CPI.TOTL.ZG]",
@@ -156,6 +159,7 @@ selected_data <- selected_data %>%
          country_code, 
          year, 
          time_code, 
+         consumer_price,
          inflation,
          inflation_deflator,
          net_nat_income_percapita_NY.ADJ.NNTY.PC.CD, 
