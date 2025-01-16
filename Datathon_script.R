@@ -443,4 +443,123 @@ gdp_countries <- c("United States", "China", "Germany", "Japan", "India",
                    "Saudi Arabia", "Switzerland") 
 countries <- subset(completed_data, country_name %in% gdp_countries)
 
+#### LASSO Regression Model ####
+
+lasso_data <- countries %>%
+  select(
+    net_nat_income_percapita_NY.ADJ.NNTY.PC.CD,
+    net_nat_income_NY.ADJ.NNTY.CD,
+    household_expenditure_GDP,
+    household_expenditure_per_capita,
+    household_expenditure_ppp,
+    gdp_percapita_NY.GDP.PCAP.PP.CD,      
+    gdp_percapita_growth_NY.GDP.PCAP.KD.ZG,
+    gdp_deflator_NY.GDP.DEFL.ZS,         
+    life_expectancy_SP.DYN.LE00.IN,
+    health_expenditure_SH.XPD.CHEX.PP.CD,
+    health_expenditure_per_cap,
+    gini_SI.POV.GINI,
+    unemployment_SL.UEM.TOTL.NE.ZS, 
+    unemployment_youth_SL.UEM.1524.NE.ZS
+  )
+
+numeric_vars <- lasso_data %>%
+  select(where(is.numeric)) %>%
+  names()
+
+lasso_data[numeric_vars] <- scale(lasso_data[numeric_vars])
+
+lasso_data$country_code <- factor(countries$country_code)
+
+lasso_data$year <- countries$year
+
+lasso_data$cost_variable <- countries$cost_variable
+
+lasso_data$volatility_variable <- countries$volatility_variable
+
+library(lme4)
+
+mixed_model_volatility <- lmer(volatility_variable ~ net_nat_income_percapita_NY.ADJ.NNTY.PC.CD+
+                                 net_nat_income_NY.ADJ.NNTY.CD+
+                                 household_expenditure_GDP+
+                                 household_expenditure_per_capita+
+                                 household_expenditure_ppp+
+                                 gdp_percapita_NY.GDP.PCAP.PP.CD+    
+                                 gdp_percapita_growth_NY.GDP.PCAP.KD.ZG+
+                                 gdp_deflator_NY.GDP.DEFL.ZS+       
+                                 life_expectancy_SP.DYN.LE00.IN+
+                                 health_expenditure_SH.XPD.CHEX.PP.CD+
+                                 health_expenditure_per_cap+
+                                 gini_SI.POV.GINI+
+                                 unemployment_SL.UEM.TOTL.NE.ZS+
+                                 unemployment_youth_SL.UEM.1524.NE.ZS+(1|country_code), 
+                               data = lasso_data
+)
+
+summary(mixed_model_volatility)
+
+plot(mixed_model_volatility)
+qqnorm(resid(mixed_model_volatility))
+qqline(resid(mixed_model_volatility))
+
+mixed_model_cost <- lmer(cost_variable ~ net_nat_income_percapita_NY.ADJ.NNTY.PC.CD+
+                           net_nat_income_NY.ADJ.NNTY.CD+
+                           household_expenditure_GDP+
+                           household_expenditure_per_capita+
+                           household_expenditure_ppp+
+                           gdp_percapita_NY.GDP.PCAP.PP.CD+    
+                           gdp_percapita_growth_NY.GDP.PCAP.KD.ZG+
+                           gdp_deflator_NY.GDP.DEFL.ZS+       
+                           life_expectancy_SP.DYN.LE00.IN+
+                           health_expenditure_SH.XPD.CHEX.PP.CD+
+                           health_expenditure_per_cap+
+                           gini_SI.POV.GINI+
+                           unemployment_SL.UEM.TOTL.NE.ZS+
+                           unemployment_youth_SL.UEM.1524.NE.ZS+(1|country_code), 
+                         data = lasso_data
+)
+
+summary(mixed_model_cost)
+
+plot(mixed_model_cost)
+qqnorm(resid(mixed_model_cost))
+qqline(resid(mixed_model_cost))
+
+mixed_model_cost2 <- lm(cost_variable ~ net_nat_income_percapita_NY.ADJ.NNTY.PC.CD+
+                           net_nat_income_NY.ADJ.NNTY.CD+
+                           household_expenditure_GDP+
+                           household_expenditure_per_capita+
+                           household_expenditure_ppp+
+                           gdp_percapita_NY.GDP.PCAP.PP.CD+    
+                           gdp_percapita_growth_NY.GDP.PCAP.KD.ZG+
+                           gdp_deflator_NY.GDP.DEFL.ZS+       
+                           life_expectancy_SP.DYN.LE00.IN+
+                           health_expenditure_SH.XPD.CHEX.PP.CD+
+                           health_expenditure_per_cap+
+                           gini_SI.POV.GINI+
+                           unemployment_SL.UEM.TOTL.NE.ZS+
+                           unemployment_youth_SL.UEM.1524.NE.ZS, 
+                         data = lasso_data
+)
+
+summary(mixed_model_cost2)
+
+mixed_model_volatility2 <- lm(volatility_variable ~ net_nat_income_percapita_NY.ADJ.NNTY.PC.CD+
+                                 net_nat_income_NY.ADJ.NNTY.CD+
+                                 household_expenditure_GDP+
+                                 household_expenditure_per_capita+
+                                 household_expenditure_ppp+
+                                 gdp_percapita_NY.GDP.PCAP.PP.CD+    
+                                 gdp_percapita_growth_NY.GDP.PCAP.KD.ZG+
+                                 gdp_deflator_NY.GDP.DEFL.ZS+       
+                                 life_expectancy_SP.DYN.LE00.IN+
+                                 health_expenditure_SH.XPD.CHEX.PP.CD+
+                                 health_expenditure_per_cap+
+                                 gini_SI.POV.GINI+
+                                 unemployment_SL.UEM.TOTL.NE.ZS+
+                                 unemployment_youth_SL.UEM.1524.NE.ZS, 
+                               data = lasso_data
+)
+
+summary(mixed_model_volatility2)
 
