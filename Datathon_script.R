@@ -19,7 +19,7 @@ library(lme4)
 library(forecast)
 library(lmerTest)
 
-#### DATA READING #### 
+#### DATA READING ####
 
 # Read raw data and metdata files
 raw_data <- read_excel("Datathon_data-2025-Raw.xlsx", sheet = 1)
